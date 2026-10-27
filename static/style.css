@@ -20,6 +20,7 @@
 
 * { box-sizing: border-box; }
 html { background: var(--night); }
+html, body { overflow-x: clip; }  /* the tombstones' ground shadows reach past their edges */
 body {
   margin: 0;
   min-height: 100vh;

@@ -2,6 +2,8 @@
 
 **Talk to the projects you left behind.**
 
+**Try it:** [git-seance.vercel.app](https://git-seance.vercel.app), with a séance recorded on a laptop plus a live room for public repos. The real thing runs on your own machine (below).
+
 Every developer has a graveyard: the hackathon project that died at 3 AM, the side project whose last commit says `wip fix later`. git séance walks a folder of your repos and lays them out as tombstones. Click one, and its ghost speaks to you in its own voice, from its own git history, through an open-weight model running on your own machine.
 
 The ghost is not allowed to make things up. Every claim it makes has to cite real evidence: a commit, a TODO, a README line, a file you never committed. Each citation is checked, and any the model invented are shown in pink and struck through as *phantom memories*.
