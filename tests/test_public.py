@@ -255,7 +255,21 @@ def test_google_native_discovery_and_fallback_to_the_next_gemma(google, monkeypa
     assert [c["role"] for c in body["contents"]] == ["user", "model", "user"]
     assert body["contents"][0]["parts"][0]["text"].startswith("CASE")
     assert body["generationConfig"]["maxOutputTokens"] == 300
+    assert body["generationConfig"]["thinkingConfig"] == {"thinkingLevel": "minimal"}
     assert spirit.spoken_by() == "gemma-4-26b-a4b-it"                # the one that answered
+
+
+def test_google_retries_without_the_thinking_setting_if_refused(google, monkeypatch):
+    bodies = []
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        bodies.append(json)
+        if "thinkingConfig" in json["generationConfig"]:
+            return FakeResponse(400, {"error": {"message": "Thinking level is not supported for this model."}})
+        return FakeResponse(200, {"candidates": [{"content": {"parts": [{"text": "Here [C1]."}]}}]})
+    monkeypatch.setattr(spirit.httpx, "post", fake_post)
+    assert spirit.chat([{"role": "user", "content": "hi"}]) == "Here [C1]."
+    assert len(bodies) == 2 and "thinkingConfig" not in bodies[1]["generationConfig"]
 
 
 def test_google_stream_falls_back_to_one_answer(google, monkeypatch):

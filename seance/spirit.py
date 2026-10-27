@@ -40,7 +40,7 @@ NUM_CTX = int(os.getenv("SEANCE_CTX", "6144"))
 KEEP_ALIVE = os.getenv("SEANCE_KEEP_ALIVE", "30m")
 CACHE_PATH = Path(os.getenv("SEANCE_CACHE", str(Path.home() / ".git-seance" / "cache.json")))
 OPENING = "__opening__"
-PROMPT_VERSION = 4  # bump when prompts change, so cached autopsies are redone
+PROMPT_VERSION = 5  # bump when prompts change, so cached autopsies are redone
 TIMEOUT = httpx.Timeout(900.0, connect=5.0)
 
 CITE = re.compile(r"\[((?:[A-Z]\d+)(?:\s*,\s*[A-Z]\d+)*)\]")
@@ -282,11 +282,16 @@ def _google() -> bool:
     return "generativelanguage.googleapis.com" in LLM_BASE
 
 
-def _gemini_body(messages: list[dict], temperature: float = 0.5, num_predict: int = 320, **_) -> dict:
+def _gemini_body(messages: list[dict], temperature: float = 0.5, num_predict: int = 320, model: str = "",
+                 think: bool = False, **_) -> dict:
     contents = [{"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
                 for m in _fold_system(messages)]
-    # Room for models that think before answering; their thoughts are dropped, the prompts keep answers short.
-    return {"contents": contents, "generationConfig": {"temperature": temperature, "maxOutputTokens": num_predict * 3}}
+    config = {"temperature": temperature, "maxOutputTokens": num_predict * 3}
+    if "gemma-4" in model and not think:
+        # Gemma 4 thinks by default, and its thoughts ate the whole output budget (empty answers after ~50 s).
+        # A ghost's few sentences don't need it: "minimal" switches thinking off.
+        config["thinkingConfig"] = {"thinkingLevel": "minimal"}
+    return {"contents": contents, "generationConfig": config}
 
 
 def _gemini_text(j: dict) -> str:
@@ -303,8 +308,11 @@ def _gemini_chat(messages: list[dict], **kw) -> str:
     last = None
     for model in _models_to_try():
         try:
-            r = httpx.post(f"{GOOGLE_API}/models/{model}:generateContent", json=_gemini_body(messages, **kw),
+            r = httpx.post(f"{GOOGLE_API}/models/{model}:generateContent", json=_gemini_body(messages, model=model, **kw),
                            headers={"x-goog-api-key": LLM_KEY}, timeout=httpx.Timeout(90.0, connect=10.0))
+            if r.status_code == 400 and "think" in r.text.lower():     # a model that won't take the thinking setting
+                r = httpx.post(f"{GOOGLE_API}/models/{model}:generateContent", json=_gemini_body(messages, think=True, **kw),
+                               headers={"x-goog-api-key": LLM_KEY}, timeout=httpx.Timeout(90.0, connect=10.0))
         except httpx.HTTPError as e:
             last = SpiritsSilent(f"Lost contact with the hosted model: {e.__class__.__name__}")
             continue
@@ -342,7 +350,7 @@ def _gemini_stream(messages: list[dict], **kw):
     sent = False
     try:
         with httpx.stream("POST", f"{GOOGLE_API}/models/{model}:streamGenerateContent", params={"alt": "sse"},
-                          json=_gemini_body(messages, **kw), headers={"x-goog-api-key": LLM_KEY},
+                          json=_gemini_body(messages, model=model, **kw), headers={"x-goog-api-key": LLM_KEY},
                           timeout=httpx.Timeout(90.0, connect=10.0)) as r:
             if r.status_code < 400:
                 for line in r.iter_lines():
