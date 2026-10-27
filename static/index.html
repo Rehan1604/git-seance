@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>git séance</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 31V15a9 9 0 0 1 18 0v16z' fill='%2357536a'/%3E%3Cpath d='M16 2c2.5 3.5 3 5 0 8-3-3-2.5-4.5 0-8z' fill='%23f7931e'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="garland" aria-hidden="true"></div>
+
+<main>
+  <section id="yard" class="yard">
+    <header class="gate">
+      <h1 class="title">git séance</h1>
+      <p class="tagline">Talk to the projects you left behind.</p>
+      <form id="summon" class="summon">
+        <label for="root" class="sr">Folder that holds your projects</label>
+        <input id="root" name="root" spellcheck="false" autocomplete="off" placeholder="C:\Users\you\Desktop">
+        <button type="submit">Walk the graveyard</button>
+      </form>
+      <p id="public-hint" class="public-hint" hidden>
+        Try a dead one:
+        <button type="button" data-example="github.com/Rehan1604/amazon-ml">Rehan1604/amazon-ml</button>
+        <button type="button" data-example="github.com/octocat/Hello-World">octocat/Hello-World</button>
+      </p>
+      <p id="spirit" class="spirit" role="status"></p>
+    </header>
+    <p id="census" class="census" role="status"></p>
+    <div id="graves" class="graves"></div>
+    <p id="breathing" class="breathing"></p>
+  </section>
+
+  <section id="room" class="room" hidden>
+    <button id="back" class="back" type="button">Back to the graveyard</button>
+    <header class="room-head">
+      <h2 id="r-name" class="r-name"></h2>
+      <p id="r-dates" class="r-dates"></p>
+      <p id="r-note" class="r-note" hidden></p>
+    </header>
+
+    <figure class="ekg-wrap">
+      <svg id="ekg" class="ekg" role="img" aria-label="Commit heartbeat from first commit to time of death"></svg>
+      <figcaption id="ekg-cap" class="ekg-cap"></figcaption>
+    </figure>
+
+    <div class="room-grid">
+      <aside class="record">
+        <h3>The record</h3>
+        <dl id="vitals" class="vitals"></dl>
+        <h3>Omens</h3>
+        <ul id="omens" class="omens"></ul>
+        <h3>Unfinished business</h3>
+        <ul id="todos" class="todos"></ul>
+      </aside>
+
+      <div class="altar">
+        <section class="slab autopsy">
+          <div class="slab-head">
+            <h3>Autopsy</h3>
+            <button id="do-autopsy" class="ghostly" type="button">Perform the autopsy</button>
+          </div>
+          <div id="autopsy"></div>
+        </section>
+
+        <section class="slab seance">
+          <div class="slab-head">
+            <h3>Séance</h3>
+            <button id="do-begin" class="ghostly" type="button">Begin the séance</button>
+          </div>
+          <div id="chat" class="chat" aria-live="polite"></div>
+          <div id="asks" class="asks" hidden>
+            <button type="button" data-q="How did you die?">How did you die?</button>
+            <button type="button" data-q="What were you supposed to become?">What were you supposed to become?</button>
+            <button type="button" data-q="What did I leave unfinished?">What did I leave unfinished?</button>
+            <button type="button" data-q="Do you forgive me?">Do you forgive me?</button>
+          </div>
+          <form id="ask" class="ask" hidden>
+            <label for="q" class="sr">Ask the ghost</label>
+            <input id="q" maxlength="600" autocomplete="off" placeholder="Ask the ghost anything about its life">
+            <button type="submit">Ask</button>
+          </form>
+        </section>
+
+        <section class="slab rites">
+          <h3>Rites</h3>
+          <p class="hint">Bring it back with three small steps, or bury it properly with an obituary in its own words.</p>
+          <div class="rite-buttons">
+            <button id="do-rise" class="ghostly" type="button">Resurrect it</button>
+            <button id="do-bury" class="ghostly" type="button">Lay it to rest</button>
+          </div>
+          <div id="rite"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<aside id="receipt" class="receipt" hidden aria-live="polite"></aside>
+<script src="/static/config.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

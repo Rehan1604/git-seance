@@ -1,0 +1,16 @@
+# Render Blueprint for the public demo: New + > Blueprint > pick this repo.
+services:
+  - type: web
+    name: git-seance
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: SEANCE_MODEL
+        value: gemma-3-27b-it
+      - key: SEANCE_LLM_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: SEANCE_LLM_API_KEY      # a Google AI Studio key; Render asks for it, it never lives in the repo
+        sync: false
+      - key: GITHUB_TOKEN            # optional: a read-only token lifts GitHub's 60 requests/hour limit
+        sync: false

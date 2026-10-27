@@ -1,0 +1,7 @@
+tests/
+DEV_POST.md
+Dockerfile
+render.yaml
+requirements.txt
+**/__pycache__
+seance/

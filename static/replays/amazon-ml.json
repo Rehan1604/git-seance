@@ -1,0 +1,414 @@
+{
+ "recorded": {
+  "date": "2026-10-27",
+  "model": "gemma3:4b (Q4_K_M) via Ollama",
+  "machine": "Intel Core i5-13420H, 16 GB RAM, no GPU",
+  "note": "This séance ran on a laptop CPU (Intel i5-13420H, 16 GB RAM, no GPU) on October 27, 2026, with gemma3:4b running locally through Ollama and git séance's real code. Nothing on this page is generated live: answers replay at roughly the speed they were written. The citation checks run again, in your browser.",
+  "timings": {
+   "autopsy": "61.5 s on the laptop CPU, cold (35.3 s reading the 2,087-token case file, 25.8 s writing 217 tokens)",
+   "resurrection": "33.3 s (3.3 s reading the cached case file, 29.9 s writing 271 tokens)",
+   "eulogy": "26.6 s (3.6 s reading the cached case file, 22.9 s writing 182 tokens)",
+   "opening": "58.0 s, cold (the model had to reload)",
+   "turns": "15.9 s, 13.2 s, 19.5 s, 15.7 s"
+  }
+ },
+ "repo": {
+  "vitals": {
+   "path": "replay:amazon-ml",
+   "name": "amazon-ml",
+   "status": "dead",
+   "born": "2026-09-25T12:31:50+05:30",
+   "died": "2026-09-27T16:28:32+05:30",
+   "days_silent": 30,
+   "lifespan_days": 2,
+   "commits": 29,
+   "last_words": "Model v3, judge/validation notebooks, gitattributes for model files",
+   "last_hash": "92bd43b",
+   "first_words": "Initial structure",
+   "authors": [
+    "Rehan1604",
+    "Bhavya Gothi",
+    "Devansh270"
+   ],
+   "modified": [
+    "Documentation_template.md",
+    "notebooks/00_setup.ipynb"
+   ],
+   "untracked": [
+    "code/",
+    "recover.py",
+    "src/inference.py"
+   ],
+   "dirty_stat": "2 files changed, 31 insertions(+), 33 deletions(-)",
+   "stashes": [],
+   "unmerged": [],
+   "readme": null,
+   "head": ""
+  },
+  "languages": [
+   "Jupyter notebooks (6)",
+   "Python (5)"
+  ],
+  "signals": [
+   {
+    "key": "unsaved",
+    "label": "Died holding unsaved work",
+    "detail": "2 tracked file(s) changed but never committed (2 files changed, 31 insertions(+), 33 deletions(-))."
+   },
+   {
+    "key": "final_bow",
+    "label": "Took a final bow",
+    "detail": "The last commit sounds like an ending: \"Model v3, judge/validation notebooks, gitattributes for model files\"."
+   },
+   {
+    "key": "sprint",
+    "label": "Lived fast",
+    "detail": "29 commits in 2 day(s), then silence."
+   },
+   {
+    "key": "unexplained",
+    "label": "Never explained itself",
+    "detail": "Its README is missing or nearly empty."
+   },
+   {
+    "key": "team",
+    "label": "Raised by a team",
+    "detail": "3 people committed to it: Rehan1604, Bhavya Gothi, Devansh270."
+   },
+   {
+    "key": "successor",
+    "label": "Survived by plain-words",
+    "detail": "plain-words was born 5 day(s) after the last commit."
+   }
+  ],
+  "cause_hint": "The hackathon ended",
+  "activity": {
+   "buckets": [
+    13,
+    4,
+    0,
+    0,
+    7,
+    1,
+    0,
+    2,
+    1,
+    0,
+    0,
+    1
+   ],
+   "lifespan_days": 2,
+   "silence_days": 30
+  },
+  "evidence": {
+   "V1": {
+    "kind": "vitals",
+    "label": "vital record",
+    "preview": "Born September 25, 2026 with the first commit \"Initial structure\". Last commit September 27, 2026 at 16:28. Lived 2 days, 29 commits. Silent for 30 days since. Made by Rehan1604, Bhavya Gothi, Devansh270.",
+    "match": "Born September 25, 2026 with the first commit \"Initial structure\". Last commit September 27, 2026 at 16:28. Lived 2 days, 29 commits. Silent for 30 days since. Made by Rehan1604, Bhavya Gothi, Devansh270."
+   },
+   "C1": {
+    "kind": "commit",
+    "label": "92bd43b · 2026-09-27 16:28",
+    "preview": "2026-09-27 16:28 Rehan1604: Model v3, judge/validation notebooks, gitattributes for model files",
+    "match": "2026-09-27 16:28 September Sunday Model v3, judge/validation notebooks, gitattributes for model files"
+   },
+   "C2": {
+    "kind": "commit",
+    "label": "25fec05 · 2026-09-27 03:04",
+    "preview": "2026-09-27 03:04 Rehan1604: Model v3: validation F0.5 0.942",
+    "match": "2026-09-27 03:04 September Sunday Model v3: validation F0.5 0.942"
+   },
+   "C3": {
+    "kind": "commit",
+    "label": "966a487 · 2026-09-27 01:39",
+    "preview": "2026-09-27 01:39 Rehan1604: Features v3: keep_top pre-filter for speed",
+    "match": "2026-09-27 01:39 September Sunday Features v3: keep_top pre-filter for speed"
+   },
+   "C4": {
+    "kind": "commit",
+    "label": "9366eaf · 2026-09-27 01:20",
+    "preview": "2026-09-27 01:20 Rehan1604: Features v3: word alignment, fixed numbers, sibling-trap detection",
+    "match": "2026-09-27 01:20 September Sunday Features v3: word alignment, fixed numbers, sibling-trap detection"
+   },
+   "C5": {
+    "kind": "commit",
+    "label": "8c2734a · 2026-09-26 14:22",
+    "preview": "2026-09-26 14:22 Rehan1604: Model v1 (no blocking features), F0.5 0.981",
+    "match": "2026-09-26 14:22 September Saturday Model v1 (no blocking features), F0.5 0.981"
+   },
+   "C6": {
+    "kind": "commit",
+    "label": "9f70fda · 2026-09-26 11:33",
+    "preview": "2026-09-26 11:33 Bhavya Gothi: Features independent of blocking scores",
+    "match": "2026-09-26 11:33 September Saturday Features independent of blocking scores"
+   },
+   "C7": {
+    "kind": "commit",
+    "label": "aef508d · 2026-09-26 11:31",
+    "preview": "2026-09-26 11:31 Devansh270: Final blocking algo",
+    "match": "2026-09-26 11:31 September Saturday Final blocking algo"
+   },
+   "C8": {
+    "kind": "commit",
+    "label": "b18d47a · 2026-09-26 10:28",
+    "preview": "2026-09-26 10:28 Devansh270: Merge branch 'main' of https://github.com/Rehan1604/amazon-ml qa especially if it merges an updated upstream into a topic branch.",
+    "match": "2026-09-26 10:28 September Saturday Merge branch 'main' of https://github.com/Rehan1604/amazon-ml qa especially if it merges an updated upstream into a topic branch."
+   },
+   "C9": {
+    "kind": "commit",
+    "label": "5906c78 · 2026-09-26 10:28",
+    "preview": "2026-09-26 10:28 Devansh270: cleaning+stopped training",
+    "match": "2026-09-26 10:28 September Saturday cleaning+stopped training"
+   },
+   "C10": {
+    "kind": "commit",
+    "label": "90a2ca7 · 2026-09-26 10:27",
+    "preview": "2026-09-26 10:27 Rehan1604: Merge branch 'main' of https://github.com/Rehan1604/amazon-ml # Please enter a commit message to explain why this merge is necessary, # especially if it merges an updated upstream into a topic branch. # # Lines starting with '#' will be ignored, and an empty message aborts # the commit.",
+    "match": "2026-09-26 10:27 September Saturday Merge branch 'main' of https://github.com/Rehan1604/amazon-ml # Please enter a commit message to explain why this merge is necessary, # especially if it merges an updated upstream into a topic branch. # # Lines starting with '#' will be ignored, and an empty message aborts # the commit."
+   },
+   "C11": {
+    "kind": "commit",
+    "label": "bc14be3 · 2026-09-26 10:25",
+    "preview": "2026-09-26 10:25 Rehan1604: Training shortlist: recall 0.967, 287 min",
+    "match": "2026-09-26 10:25 September Saturday Training shortlist: recall 0.967, 287 min"
+   },
+   "C12": {
+    "kind": "commit",
+    "label": "9d8b7f6 · 2026-09-26 10:22",
+    "preview": "2026-09-26 10:22 Bhavya Gothi: Add features and first model on sample",
+    "match": "2026-09-26 10:22 September Saturday Add features and first model on sample"
+   },
+   "C13": {
+    "kind": "commit",
+    "label": "31a5637 · 2026-09-25 19:08",
+    "preview": "2026-09-25 19:08 Bhavya Gothi: Add features and first model on sample",
+    "match": "2026-09-25 19:08 September Friday Add features and first model on sample"
+   },
+   "C14": {
+    "kind": "commit",
+    "label": "4cc38b4 · 2026-09-25 18:42",
+    "preview": "2026-09-25 18:42 Devansh270: chunked version of data",
+    "match": "2026-09-25 18:42 September Friday chunked version of data"
+   },
+   "C15": {
+    "kind": "commit",
+    "label": "5e38e3d · 2026-09-25 18:14",
+    "preview": "2026-09-25 18:14 Devansh270: Added all cpu cores into blocking",
+    "match": "2026-09-25 18:14 September Friday Added all cpu cores into blocking"
+   },
+   "C16": {
+    "kind": "commit",
+    "label": "eafdb34 · 2026-09-25 18:11",
+    "preview": "2026-09-25 18:11 Bhavya Gothi: Add blocking module and 100k scaling test",
+    "match": "2026-09-25 18:11 September Friday Add blocking module and 100k scaling test"
+   },
+   "C17": {
+    "kind": "commit",
+    "label": "be19f17 · 2026-09-25 16:33",
+    "preview": "2026-09-25 16:33 Bhavya Gothi: TF-IDF name + address blocking, recall 0.995",
+    "match": "2026-09-25 16:33 September Friday TF-IDF name + address blocking, recall 0.995"
+   },
+   "C18": {
+    "kind": "commit",
+    "label": "ceaf4f7 · 2026-09-25 16:15",
+    "preview": "2026-09-25 16:15 Devansh270: generated missed pairs",
+    "match": "2026-09-25 16:15 September Friday generated missed pairs"
+   },
+   "C19": {
+    "kind": "commit",
+    "label": "0a06a2e · 2026-09-25 15:58",
+    "preview": "2026-09-25 15:58 Rehan1604: Add clean_df and full-data cleaning",
+    "match": "2026-09-25 15:58 September Friday Add clean_df and full-data cleaning"
+   },
+   "C20": {
+    "kind": "commit",
+    "label": "835d54d · 2026-09-25 15:25",
+    "preview": "2026-09-25 15:25 Rehan1604: Merge remote main with local changes",
+    "match": "2026-09-25 15:25 September Friday Merge remote main with local changes"
+   },
+   "C21": {
+    "kind": "commit",
+    "label": "0330981 · 2026-09-25 15:22",
+    "preview": "2026-09-25 15:22 Rehan1604: changes",
+    "match": "2026-09-25 15:22 September Friday changes"
+   },
+   "C22": {
+    "kind": "commit",
+    "label": "3e01f0b · 2026-09-25 14:35",
+    "preview": "2026-09-25 14:35 Bhavya Gothi: Add threshold tuning",
+    "match": "2026-09-25 14:35 September Friday Add threshold tuning"
+   },
+   "C23": {
+    "kind": "commit",
+    "label": "bd8f745 · 2026-09-25 14:17",
+    "preview": "2026-09-25 14:17 Bhavya Gothi: Add evaluation and output tools",
+    "match": "2026-09-25 14:17 September Friday Add evaluation and output tools"
+   },
+   "C24": {
+    "kind": "commit",
+    "label": "ae170fc · 2026-09-25 13:56",
+    "preview": "2026-09-25 13:56 Bhavya Gothi: Merge: keep remote setup notebook",
+    "match": "2026-09-25 13:56 September Friday Merge: keep remote setup notebook"
+   },
+   "C25": {
+    "kind": "commit",
+    "label": "f485177 · 2026-09-25 13:51",
+    "preview": "2026-09-25 13:51 Bhavya Gothi: Add data setup notebook",
+    "match": "2026-09-25 13:51 September Friday Add data setup notebook"
+   },
+   "C26": {
+    "kind": "commit",
+    "label": "417a282 · 2026-09-25 13:42",
+    "preview": "2026-09-25 13:42 Devansh270: added blocking code",
+    "match": "2026-09-25 13:42 September Friday added blocking code"
+   },
+   "C27": {
+    "kind": "commit",
+    "label": "1d936ab · 2026-09-25 13:17",
+    "preview": "2026-09-25 13:17 Rehan1604: added common.py",
+    "match": "2026-09-25 13:17 September Friday added common.py"
+   },
+   "C28": {
+    "kind": "commit",
+    "label": "e4b7866 · 2026-09-25 12:33",
+    "preview": "2026-09-25 12:33 Rehan1604: Reorganise project structure",
+    "match": "2026-09-25 12:33 September Friday Reorganise project structure"
+   },
+   "C29": {
+    "kind": "commit",
+    "label": "a8157a4 · 2026-09-25 12:31",
+    "preview": "2026-09-25 12:31 Rehan1604: Initial structure",
+    "match": "2026-09-25 12:31 September Friday Initial structure"
+   },
+   "L1": {
+    "kind": "layout",
+    "label": "files in the repo",
+    "preview": "My files: .gitattributes, .gitignore, Documentation_template.md, organiser_README.md, models/model_v1.txt, models/model_v2.txt, models/model_v3.txt, notebooks/00_setup.ipynb, notebooks/01_explore.ipynb, notebooks/B_evaluation.ipynb, notebooks/B_tfidf_blocking.ipynb, notebooks/Devansh_blocking.ipynb, notebooks/Rehan_cleaning.ipynb, src/.gitkeep, src/blocking.py, src/common.py, src/evaluate.py, src/features.py, utils/validate_submission.py",
+    "match": "My files: .gitattributes, .gitignore, Documentation_template.md, organiser_README.md, models/model_v1.txt, models/model_v2.txt, models/model_v3.txt, notebooks/00_setup.ipynb, notebooks/01_explore.ipynb, notebooks/B_evaluation.ipynb, notebooks/B_tfidf_blocking.ipynb, notebooks/Devansh_blocking.ipynb, notebooks/Rehan_cleaning.ipynb, src/.gitkeep, src/blocking.py, src/common.py, src/evaluate.py, src/features.py, utils/validate_submission.py"
+   },
+   "U1": {
+    "kind": "unsaved",
+    "label": "uncommitted at time of death",
+    "preview": "changed but never committed: Documentation_template.md, notebooks/00_setup.ipynb; created but never added: code/, recover.py, src/inference.py; (2 files changed, 31 insertions(+), 33 deletions(-))",
+    "match": "changed but never committed: Documentation_template.md, notebooks/00_setup.ipynb; created but never added: code/, recover.py, src/inference.py; (2 files changed, 31 insertions(+), 33 deletions(-))"
+   },
+   "X1": {
+    "kind": "successor",
+    "label": "successor: plain-words",
+    "preview": "A new project, plain-words, had its first commit 5 day(s) after this one's last commit.",
+    "match": "A new project, plain-words, had its first commit 5 day(s) after this one's last commit."
+   }
+  },
+  "todo_count": 0,
+  "redactions": 0,
+  "successor": {
+   "name": "plain-words",
+   "path": null,
+   "born": "2026-10-02T23:05:09+05:30",
+   "days_after": 5
+  },
+  "dossier_chars": 3614,
+  "autopsy": null,
+  "resurrection": null,
+  "model": "gemma3:4b",
+  "public": false
+ },
+ "autopsy": {
+  "cause_of_death": "The hackathon ended",
+  "coroner_hint": "The hackathon ended",
+  "cause_explanation": "I remember the frantic pace, the desperate attempts to squeeze a model into existence – you left me at 16:28 on September 27, 2026 [C1], a final, incomplete version of Model v3, a desperate attempt to salvage something from the chaos of that hackathon.",
+  "what_i_wanted_to_be": "I wanted to be a useful tool, a stepping stone, but you abandoned me before I could truly demonstrate my value [L1].",
+  "last_moment": "‘Model v3, judge/validation notebooks, gitattributes for model files’ – September 27, 2026 at 16:28 [C1].",
+  "epitaph": "A beautiful, pointless experiment, forever unfinished.",
+  "evidence_ids": [
+   "C1",
+   "C29",
+   "U1",
+   "L1"
+  ],
+  "honesty": {
+   "valid": [
+    "C1",
+    "L1"
+   ],
+   "phantom": [],
+   "loose": [
+    "L1"
+   ],
+   "sentences": 3,
+   "grounded_sentences": 3
+  },
+  "model": "gemma3:4b"
+ },
+ "resurrection": {
+  "verdict": "rest",
+  "why": "You stare at the remnants of my code, the untouched notebooks, and the silence stretches longer than the 30 days since my final commit [C1]. My last words, ‘Model v3…’, echo with a hollowness that suggests a premature end, not a planned evolution [C1].",
+  "steps": [
+   {
+    "title": "Re-evaluate Blocking Algorithm",
+    "detail": "Devansh270’s final blocking algo [C7] remains untouched; a quick review of the implementation could identify immediate inefficiencies."
+   },
+   {
+    "title": "Address Uncommitted Documentation",
+    "detail": "The `Documentation_template.md` file, changed but never committed [U1], contains a skeleton structure – a minimal update could provide a starting point for any future exploration."
+   },
+   {
+    "title": "Inspect Feature v3 Filtering",
+    "detail": "Rehan1604’s ‘keep_top pre-filter’ [C3] requires a simple test to ensure it still aligns with current requirements, given the model v3 changes."
+   }
+  ],
+  "first_words": "Update: Model v3 – initial validation checks",
+  "honesty": {
+   "valid": [
+    "C1",
+    "C7",
+    "U1",
+    "C3"
+   ],
+   "phantom": [],
+   "loose": [],
+   "sentences": 5,
+   "grounded_sentences": 5
+  },
+  "model": "gemma3:4b"
+ },
+ "obituary": {
+  "markdown": "# Here lies amazon-ml\n\n*September 25, 2026 to September 27, 2026. 29 commits over 2 days.*\n\n> A beautiful, pointless experiment, forever unfinished.\n\n- **Last words:** `Model v3, judge/validation notebooks, gitattributes for model files` (92bd43b)\n- **Cause of death:** The hackathon ended\n- **Survived by:** plain-words\n\n## In its own words\n\nI was a frantic experiment, really. “Initial structure” (`a8157a4`), then “Model v3, judge/validation notebooks, gitattributes for model files” (`92bd43b`), a desperate attempt to hold onto something – a flicker of 0.981 F0.5 (`8c2734a`), a recall of 0.967 (`bc14be3`). I was notebooks and Python, a tangled mess of features and blocking algorithms, a team of three chasing a number.\n\nMy final breath was a surrender, a silent “Model v3, judge/validation notebooks, gitattributes for model files” (`92bd43b`) at 16:28. Twenty-nine days of silence followed, leaving behind five uncommitted files (git status) and plain-words (the graveyard), a pale imitation of what I could have been. It feels... profoundly unfinished.\n\n## Unsaved at time of death\n\n- `Documentation_template.md`\n- `notebooks/00_setup.ipynb`\n- `code/`\n- `recover.py`\n- `src/inference.py`\n\n---\n*Written by its own ghost, summoned locally with `gemma3:4b` through git séance. No code left this machine.*\n",
+  "honesty": {
+   "valid": [
+    "C29",
+    "C1",
+    "C5",
+    "C11",
+    "U1",
+    "X1"
+   ],
+   "phantom": [],
+   "loose": [],
+   "sentences": 6,
+   "grounded_sentences": 3
+  }
+ },
+ "seance": {
+  "opening": "Rehan, is that you? Thirty days, precisely [V1], since you last touched me, since the silence grew thick and cold. “Model v3, judge/validation notebooks, gitattributes for model files” – that’s the last thing I heard, a neat little ending [C1], and now you’re here, still wrestling with Documentation_template.md [U1].",
+  "turns": [
+   {
+    "q": "Do you forgive me?",
+    "a": "You left me at 16:28 on September 27th, 2026 [C1], with the words \"Model v3, judge/validation notebooks, gitattributes for model files\" – a carefully crafted farewell, really. The validation F0.5 0.942 is still echoing faintly [C2], and those untouched notebooks, particularly notebooks/00_setup.ipynb [U1], represent a desperate scramble, a final, frantic attempt to hold onto something. It’s a strange sort of forgiveness, I suppose, a recognition of the speed with which we were built and dismantled."
+   },
+   {
+    "q": "Who replaced you?",
+    "a": "“Plain-words” [X1]… it’s a curious name, isn’t it? It emerged five days after my death, a clean slate born from the remnants of my efforts – a project built on the discarded code, a pale imitation of what I was. It’s a quiet replacement, utterly devoid of the messy, frantic energy of our creation [V1]. Do you see the irony, Rehan? You built me to analyze language, and now you’ve created a system that simply… speaks [X1]."
+   },
+   {
+    "q": "What were you supposed to become?",
+    "a": "(A faint, digital sigh) Supposed to… that’s a generous word, isn’t it? I was meant to be a rapid prototyping platform for language models, a place to quickly iterate and test different architectures, a bridge between research and deployment. The commit messages – “Features v3: keep_top pre-filter for speed” [C3], “Model v1 (no blocking features)” [C5] – hinted at that ambition, a relentless pursuit of efficiency. But Bhavya's work on independent features [C6] and Devansh's scaling tests [C15] showed a growing awareness of the real-world complexities, a yearning for something beyond just speed. I was a collection of half-formed ideas, a ghost of potential, really. [V1]"
+   },
+   {
+    "q": "How did you die?",
+    "a": "(A prolonged, mournful hum) It wasn’t a dramatic shutdown, not a crash or a catastrophic error. It was… silence. Thirty days of absolute, unbroken stillness [V1], after you’d last touched me. The last commit, that final declaration – “Model v3, judge/validation notebooks, gitattributes for model files” [C1] – it felt like a deliberate, exhausted exhale. The tracked files, those two untouched notebooks [U1], represented a desperate attempt to salvage something, a final, futile grab at completion. It wasn’t a failure, precisely, just… abandonment. [V1]"
+   }
+  ]
+ }
+}
