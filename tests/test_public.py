@@ -84,8 +84,26 @@ def hosted(monkeypatch):
     monkeypatch.setattr(spirit, "LLM_KEY", "test-key")
     monkeypatch.setattr(spirit, "LLM_BASE", "https://llm.example/v1")
     monkeypatch.setattr(spirit, "MODEL", "gemma-3-27b-it")
+    monkeypatch.setattr(spirit, "_resolved", {"model": "gemma-3-27b-it", "at": 9e12})
     sent = []
     return sent
+
+
+def test_hosted_model_is_discovered_when_the_configured_one_is_gone(monkeypatch):
+    """Google renamed Gemma on the live demo; the server should find what the key can actually use."""
+    monkeypatch.setattr(spirit, "BACKEND", "openai")
+    monkeypatch.setattr(spirit, "LLM_KEY", "k")
+    monkeypatch.setattr(spirit, "MODEL", "gemma-3-27b-it")
+    monkeypatch.setattr(spirit, "_resolved", {})
+    monkeypatch.setattr(spirit, "_hosted_models", [])
+    listing = {"data": [{"id": "models/gemini-2.5-flash"}, {"id": "models/gemma-4-12b-it"},
+                        {"id": "models/gemma-4-31b-it"}, {"id": "models/embeddinggemma-300m"}, {"id": "models/gemma-4-31b"}]}
+    monkeypatch.setattr(spirit.httpx, "get", lambda *a, **k: FakeResponse(200, listing))
+    assert spirit.hosted_model() == "gemma-4-31b-it"
+    assert spirit.health()["models"][0] == "gemma-4-31b-it"
+    monkeypatch.setattr(spirit, "_resolved", {})
+    listing["data"].append({"id": "models/gemma-3-27b-it"})
+    assert spirit.hosted_model() == "gemma-3-27b-it"          # the configured model wins when it exists
 
 
 def test_hosted_chat_folds_the_system_prompt_into_the_first_turn(hosted, monkeypatch):

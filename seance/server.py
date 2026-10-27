@@ -191,7 +191,7 @@ def repo(path: str):
         "dossier_chars": len(excavate.dossier_text(d)),
         "autopsy": spirit.cache_get(spirit.cache_key("autopsy", p, state)),
         "resurrection": spirit.cache_get(spirit.cache_key("resurrect", p, state)),
-        "model": spirit.MODEL,
+        "model": spirit.spoken_by(),
         "public": PUBLIC,
     }
 

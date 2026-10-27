@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -124,8 +125,9 @@ def verify_citations(text: str, valid: set[str] | dict) -> dict:
 def health() -> dict:
     if BACKEND == "openai":
         host = re.sub(r"^https?://([^/]+).*$", r"\1", LLM_BASE)
-        return {"host": host, "model": MODEL, "backend": "hosted", "ollama": bool(LLM_KEY),
-                "model_ready": bool(LLM_KEY), "models": [MODEL]}
+        model = hosted_model() if LLM_KEY else MODEL
+        return {"host": host, "model": model, "backend": "hosted", "ollama": bool(LLM_KEY),
+                "model_ready": bool(LLM_KEY), "models": _hosted_models or [model]}
     base = {"host": OLLAMA, "model": MODEL, "backend": "ollama", "ollama": False, "model_ready": False, "models": []}
     try:
         r = httpx.get(f"{OLLAMA}/api/tags", timeout=3)
@@ -221,8 +223,42 @@ def _fold_system(messages: list[dict]) -> list[dict]:
 
 def _hosted_payload(messages: list[dict], *, fmt=None, temperature: float = 0.5,
                     num_predict: int = 320, stream: bool = False) -> dict:
-    return {"model": MODEL, "messages": _fold_system(messages), "temperature": temperature,
+    return {"model": hosted_model(), "messages": _fold_system(messages), "temperature": temperature,
             "max_tokens": num_predict, "stream": stream}
+
+
+_hosted_models: list[str] = []
+_resolved: dict = {}
+
+
+def _size(model_id: str) -> float:
+    m = re.search(r"(\d+(?:\.\d+)?)b\b", model_id.lower())
+    return float(m.group(1)) if m else 0.0
+
+
+def spoken_by() -> str:
+    return hosted_model() if BACKEND == "openai" else MODEL
+
+
+def hosted_model() -> str:
+    """The open-weight model to call. Hosts rename models over time, so ask the host which Gemma models this key
+    can use: keep SEANCE_MODEL if it's offered, otherwise take the largest instruction-tuned Gemma. Cached for an hour."""
+    if _resolved.get("at", 0) > time.time() - 3600:
+        return _resolved["model"]
+    chosen = MODEL
+    try:
+        r = httpx.get(f"{LLM_BASE}/models", headers={"Authorization": f"Bearer {LLM_KEY}"}, timeout=10)
+        ids = [str(m.get("id", "")).removeprefix("models/") for m in r.json().get("data", [])] if r.status_code == 200 else []
+    except (httpx.HTTPError, ValueError, AttributeError):
+        ids = []
+    if ids:
+        gemma = sorted((i for i in ids if "gemma" in i.lower() and "embed" not in i.lower()),
+                       key=lambda i: (i.lower().endswith("-it"), _size(i)), reverse=True)
+        _hosted_models[:] = gemma
+        if MODEL not in ids and gemma:
+            chosen = gemma[0]
+    _resolved.update(model=chosen, at=time.time())
+    return chosen
 
 
 def _hosted_error(status: int, body: str) -> str:
@@ -434,7 +470,7 @@ def clean_autopsy(out: dict, d: dict) -> dict:
         "epitaph": _clean_epitaph(out.get("epitaph", "")),
         "evidence_ids": _dedupe(ids + check["valid"]),
         "honesty": check,
-        "model": MODEL,
+        "model": spoken_by(),
     }
 
 
@@ -467,7 +503,7 @@ def clean_resurrection(out: dict, d: dict) -> dict:
         "steps": steps,
         "first_words": " ".join(first.split()[:12]) or "chore: wake up",
         "honesty": check,
-        "model": MODEL,
+        "model": spoken_by(),
     }
 
 
@@ -566,7 +602,7 @@ def obituary_markdown(d: dict, eulogy_text: str, autopsy_result: dict | None = N
         lines += ["## Unsaved at time of death", ""] + [f"- `{p}`" for p in unsaved] + [""]
     where = ("summoned locally with `{m}` through git séance. No code left this machine." if BACKEND != "openai" else
              "summoned from its public GitHub history with `{m}` (open weights, hosted) through git séance.")
-    lines += ["---", f"*Written by its own ghost, {where.format(m=MODEL)}*", ""]
+    lines += ["---", f"*Written by its own ghost, {where.format(m=hosted_model() if BACKEND == "openai" else MODEL)}*", ""]
     return "\n".join(lines)
 
 
