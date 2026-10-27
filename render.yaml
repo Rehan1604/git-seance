@@ -7,7 +7,7 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: SEANCE_MODEL
-        value: gemma-3-27b-it
+        value: gemma-4-31b-it
       - key: SEANCE_LLM_BASE_URL
         value: https://generativelanguage.googleapis.com/v1beta/openai
       - key: SEANCE_LLM_API_KEY      # a Google AI Studio key; Render asks for it, it never lives in the repo

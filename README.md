@@ -70,7 +70,7 @@ The server binds to `127.0.0.1` only. Nothing calls out to the internet: no font
 There's also a hosted version, so people can try it without installing anything:
 
 - **The site (Vercel)** replays a séance recorded on a laptop CPU with `gemma3:4b` through Ollama: the real autopsy, conversation, resurrection and obituary for `amazon-ml`, with every citation clickable. Nothing on it is generated live, and it works even while the API is asleep.
-- **The live room (Render)** runs the same code with `SEANCE_PUBLIC=1`. Visitors paste a **public** GitHub repo; it's cloned (blobless), excavated exactly like a local one, and its ghost speaks through Gemma 3 27B (open weights, hosted on Google AI Studio). It never reads anything but the repo it was given, can't write anywhere, and is rate-limited.
+- **The live room (Render)** runs the same code with `SEANCE_PUBLIC=1`. Visitors paste a **public** GitHub repo; it's cloned (blobless), excavated exactly like a local one, and its ghost speaks through Gemma 4 31B (open weights, hosted on Google AI Studio; the server picks whichever Gemma the key can use). It never reads anything but the repo it was given, can't write anywhere, and is rate-limited.
 
 The private, local version above is still the real thing: your unpushed work never leaves your machine.
 

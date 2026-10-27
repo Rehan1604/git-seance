@@ -93,6 +93,7 @@ def test_hosted_model_is_discovered_when_the_configured_one_is_gone(monkeypatch)
     """Google renamed Gemma on the live demo; the server should find what the key can actually use."""
     monkeypatch.setattr(spirit, "BACKEND", "openai")
     monkeypatch.setattr(spirit, "LLM_KEY", "k")
+    monkeypatch.setattr(spirit, "LLM_BASE", "https://llm.example/v1")
     monkeypatch.setattr(spirit, "MODEL", "gemma-3-27b-it")
     monkeypatch.setattr(spirit, "_resolved", {})
     monkeypatch.setattr(spirit, "_hosted_models", [])
@@ -214,3 +215,66 @@ def test_local_mode_has_no_summon():
     from fastapi.testclient import TestClient
     from seance import server
     assert TestClient(server.app).post("/api/summon", json={"url": "a/b"}).status_code == 404
+
+
+# ---------------------------------------------------------------- Google's native API (what the live demo uses)
+
+@pytest.fixture
+def google(monkeypatch):
+    monkeypatch.setattr(spirit, "BACKEND", "openai")
+    monkeypatch.setattr(spirit, "LLM_KEY", "k")
+    monkeypatch.setattr(spirit, "LLM_BASE", "https://generativelanguage.googleapis.com/v1beta/openai")
+    monkeypatch.setattr(spirit, "MODEL", "gemma-3-27b-it")
+    monkeypatch.setattr(spirit, "_resolved", {})
+    monkeypatch.setattr(spirit, "_hosted_models", [])
+    listing = {"models": [
+        {"name": "models/gemini-2.5-flash", "supportedGenerationMethods": ["generateContent"]},
+        {"name": "models/gemma-4-31b-it", "supportedGenerationMethods": ["generateContent"]},
+        {"name": "models/gemma-4-26b-a4b-it", "supportedGenerationMethods": ["generateContent", "countTokens"]},
+        {"name": "models/embeddinggemma-300m", "supportedGenerationMethods": ["embedContent"]},
+    ]}
+    monkeypatch.setattr(spirit.httpx, "get", lambda url, **k: FakeResponse(200, listing))
+
+
+def test_google_native_discovery_and_fallback_to_the_next_gemma(google, monkeypatch):
+    calls = []
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        calls.append((url, json))
+        if "gemma-4-31b-it" in url:
+            return FakeResponse(500, {"error": {"code": 500, "message": "Internal error encountered."}})
+        return FakeResponse(200, {"candidates": [{"content": {"parts": [
+            {"text": "Let me think about the evidence...", "thought": True},
+            {"text": "You left me at 16:28 [C1]."}]}}]})
+    monkeypatch.setattr(spirit.httpx, "post", fake_post)
+    out = spirit.chat([{"role": "system", "content": "CASE"}, {"role": "user", "content": "hi"},
+                       {"role": "assistant", "content": "boo"}, {"role": "user", "content": "again"}], num_predict=100)
+    assert out == "You left me at 16:28 [C1]."                       # thoughts dropped
+    assert [u.rsplit("/", 1)[1] for u, _ in calls] == ["gemma-4-31b-it:generateContent", "gemma-4-26b-a4b-it:generateContent"]
+    body = calls[0][1]
+    assert [c["role"] for c in body["contents"]] == ["user", "model", "user"]
+    assert body["contents"][0]["parts"][0]["text"].startswith("CASE")
+    assert body["generationConfig"]["maxOutputTokens"] == 300
+    assert spirit.spoken_by() == "gemma-4-26b-a4b-it"                # the one that answered
+
+
+def test_google_stream_falls_back_to_one_answer(google, monkeypatch):
+    @contextmanager
+    def failing_stream(method, url, params=None, json=None, headers=None, timeout=None):
+        assert params == {"alt": "sse"}
+        yield FakeResponse(500, {"error": "boom"})
+    monkeypatch.setattr(spirit.httpx, "stream", failing_stream)
+    monkeypatch.setattr(spirit.httpx, "post", lambda *a, **k: FakeResponse(200, {"candidates": [{"content": {"parts": [{"text": "Still here [C1]."}]}}]}))
+    assert "".join(spirit.stream_chat([{"role": "user", "content": "hi"}])) == "Still here [C1]."
+
+
+def test_google_stream_reads_sse(google, monkeypatch):
+    lines = ['data: {"candidates":[{"content":{"parts":[{"text":"Hmm","thought":true}]}}]}',
+             'data: {"candidates":[{"content":{"parts":[{"text":"You came "}]}}]}', "",
+             'data: {"candidates":[{"content":{"parts":[{"text":"back [C1]."}]}}]}']
+
+    @contextmanager
+    def sse(method, url, params=None, json=None, headers=None, timeout=None):
+        yield FakeResponse(200, lines=lines)
+    monkeypatch.setattr(spirit.httpx, "stream", sse)
+    assert "".join(spirit.stream_chat([{"role": "user", "content": "hi"}])) == "You came back [C1]."

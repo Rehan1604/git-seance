@@ -247,8 +247,13 @@ def hosted_model() -> str:
         return _resolved["model"]
     chosen = MODEL
     try:
-        r = httpx.get(f"{LLM_BASE}/models", headers={"Authorization": f"Bearer {LLM_KEY}"}, timeout=10)
-        ids = [str(m.get("id", "")).removeprefix("models/") for m in r.json().get("data", [])] if r.status_code == 200 else []
+        if _google():
+            r = httpx.get(f"{GOOGLE_API}/models", params={"pageSize": 1000}, headers={"x-goog-api-key": LLM_KEY}, timeout=10)
+            ids = [str(m.get("name", "")).removeprefix("models/") for m in r.json().get("models", [])
+                   if "generateContent" in m.get("supportedGenerationMethods", [])] if r.status_code == 200 else []
+        else:
+            r = httpx.get(f"{LLM_BASE}/models", headers={"Authorization": f"Bearer {LLM_KEY}"}, timeout=10)
+            ids = [str(m.get("id", "")).removeprefix("models/") for m in r.json().get("data", [])] if r.status_code == 200 else []
     except (httpx.HTTPError, ValueError, AttributeError):
         ids = []
     if ids:
@@ -269,7 +274,56 @@ def _hosted_error(status: int, body: str) -> str:
     return f"The hosted model refused ({status}): {body[:200]}"
 
 
+GOOGLE_API = "https://generativelanguage.googleapis.com/v1beta"
+
+
+def _google() -> bool:
+    """Google's OpenAI-compatible layer is a beta shim that fails on Gemma 4 (generic 500s); its native API works."""
+    return "generativelanguage.googleapis.com" in LLM_BASE
+
+
+def _gemini_body(messages: list[dict], temperature: float = 0.5, num_predict: int = 320, **_) -> dict:
+    contents = [{"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
+                for m in _fold_system(messages)]
+    # Room for models that think before answering; their thoughts are dropped, the prompts keep answers short.
+    return {"contents": contents, "generationConfig": {"temperature": temperature, "maxOutputTokens": num_predict * 3}}
+
+
+def _gemini_text(j: dict) -> str:
+    parts = ((j.get("candidates") or [{}])[0].get("content") or {}).get("parts") or []
+    return "".join(p.get("text", "") for p in parts if not p.get("thought"))
+
+
+def _models_to_try() -> list[str]:
+    first = hosted_model()
+    return [first] + [m for m in _hosted_models if m != first][:1]
+
+
+def _gemini_chat(messages: list[dict], **kw) -> str:
+    last = None
+    for model in _models_to_try():
+        try:
+            r = httpx.post(f"{GOOGLE_API}/models/{model}:generateContent", json=_gemini_body(messages, **kw),
+                           headers={"x-goog-api-key": LLM_KEY}, timeout=httpx.Timeout(90.0, connect=10.0))
+        except httpx.HTTPError as e:
+            last = SpiritsSilent(f"Lost contact with the hosted model: {e.__class__.__name__}")
+            continue
+        if r.status_code >= 500 or r.status_code == 404:
+            last = SpiritsSilent(_hosted_error(r.status_code, r.text))
+            continue
+        if r.status_code >= 400:
+            raise SpiritsSilent(_hosted_error(r.status_code, r.text))
+        text = _gemini_text(r.json())
+        if text.strip():
+            _resolved["model"] = model          # remember the one that answered
+            return text
+        last = SpiritsSilent("The hosted model answered with silence.")
+    raise last or SpiritsSilent("No hosted model answered.")
+
+
 def _hosted_chat(messages: list[dict], **kw) -> str:
+    if _google():
+        return _gemini_chat(messages, **kw)
     try:
         r = httpx.post(f"{LLM_BASE}/chat/completions", json=_hosted_payload(messages, **kw),
                        headers={"Authorization": f"Bearer {LLM_KEY}"}, timeout=httpx.Timeout(120.0, connect=10.0))
@@ -283,7 +337,43 @@ def _hosted_chat(messages: list[dict], **kw) -> str:
         raise SpiritsSilent("The hosted model answered in a shape I don't understand.") from e
 
 
+def _gemini_stream(messages: list[dict], **kw):
+    model = hosted_model()
+    sent = False
+    try:
+        with httpx.stream("POST", f"{GOOGLE_API}/models/{model}:streamGenerateContent", params={"alt": "sse"},
+                          json=_gemini_body(messages, **kw), headers={"x-goog-api-key": LLM_KEY},
+                          timeout=httpx.Timeout(90.0, connect=10.0)) as r:
+            if r.status_code < 400:
+                for line in r.iter_lines():
+                    if not line.startswith("data:"):
+                        continue
+                    try:
+                        chunk = _gemini_text(json.loads(line[5:].strip()))
+                    except (ValueError, AttributeError, IndexError, TypeError):
+                        continue
+                    if chunk:
+                        sent = True
+                        yield chunk
+                if sent:
+                    return
+            elif r.status_code < 500 and r.status_code != 404:
+                yield f"[{_hosted_error(r.status_code, r.read().decode('utf-8', 'replace'))}]"
+                return
+    except httpx.HTTPError:
+        if sent:
+            yield "\n[the connection to the other side was lost]"
+            return
+    try:                                         # streaming failed before a word arrived: ask once, without streaming
+        yield _gemini_chat(messages, **kw)
+    except SpiritsSilent as e:
+        yield f"[{e}]"
+
+
 def _hosted_stream(messages: list[dict], **kw):
+    if _google():
+        yield from _gemini_stream(messages, **kw)
+        return
     try:
         with httpx.stream("POST", f"{LLM_BASE}/chat/completions", json=_hosted_payload(messages, stream=True, **kw),
                           headers={"Authorization": f"Bearer {LLM_KEY}"},
